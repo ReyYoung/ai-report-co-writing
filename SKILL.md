@@ -1,11 +1,18 @@
 ---
 name: "ai-report-co-writing"
 description: "基于招标文件或需求材料编制、多轮修订大型Word方案与报告（技术标、可研、解决方案、汇报材料），含版式、表格、插图规范，保证事实可溯、全文一致、不覆盖用户修改。"
+version: 1.0.1
+display_name: "AI 方案与报告协同编写"
+display_name_en: "AI Report Co-Writing"
+description_zh: "基于招标文件或需求材料编制、多轮修订大型Word方案与报告（技术标、可研、解决方案、汇报材料），含版式、表格、插图规范，保证事实可溯、全文一致、不覆盖用户修改。"
+description_en: "Draft and iteratively revise large Word proposals and reports (bid technical proposals, feasibility studies, solution documents, briefing materials) from tender or requirements documents, with layout, table, and figure conventions; keeps facts traceable, the whole document consistent, and the user's own edits intact."
 ---
 
 # 方案与报告编制
 
 覆盖从招标文件或需求材料到定稿的全过程：需求分析、目录、分章编制、初稿评审、合稿出图，以及此后的多轮修订。适用于几十到几百页的 Word 方案或报告：投标技术标、可研报告、解决方案、项目汇报材料等。核心目标有三个：内容有依据、全文前后一致、用户自己的修改永远不丢。
+
+本技能只有 SKILL.md 这一个文件，没有随附的脚本或模板。文中提到的「脚本」，都由执行者按当时的文档现写现用。
 
 ## 一、编制原则（每一轮都适用）
 
@@ -166,7 +173,7 @@ description: "基于招标文件或需求材料编制、多轮修订大型Word�
 - 使用 python-docx 加 lxml 直接改 XML，在原有文字片段（run）上替换文字，保留原格式。新增段落、表格从文中同类元素深拷贝后改文字，样式自然一致。
 - **不要用 LibreOffice 保存用户的 WPS 或 Word 文件**：它会改写兼容设置（如 useFELayout）、分页方式和样式，导致 WPS 里页数变化、分页符丢失。LibreOffice 只用来转 PDF 预览、估算页数（LibreOffice 页数约为 WPS 的 1.07 倍）。这个比例只在机器上装有宋体、黑体时成立；没有这两种字体的环境里 LibreOffice 会换用别的字体，页数会明显偏多，不能当依据。目录由用户在 WPS 里更新（新增或改名标题时选「更新整个目录」，只影响页码时选「只更新页码」）。
 - 样式编号因保存软件而异：WPS 保存的文件中标题样式为 '2'～'7'、目录样式为 '13'/'16'；Word 或 LibreOffice 保存的为 Heading1～6、TOC1/TOC2。脚本两者都要识别。
-- **图表编号**：新增的图表先用占位编号（如 表5-901），全部改完后用重编号脚本按出现顺序重排，并同步更新正文中的引用。删除图表后同样重编号。
+- **图表编号**：新增的图表先用占位编号（如 表5-901），全部改完后写一段脚本，按出现顺序重排编号，并同步更新正文中的引用。删除图表后同样重排一遍。
 - **从零新建文档时**（例如用 python-docx 的默认模板）：
   - 用 python-docx 直接建样式、写段落和表格，不用 HTML 或 Markdown 转 Word 的转换工具生成正文：转出来的文档没有样式，格式全写在段落上，后面无法统一调整。字体名写「宋体」「黑体」，不写 SimSun、SimHei。
   - 默认模板的标题样式和文档默认字体带有主题字体属性（asciiTheme、eastAsiaTheme、hAnsiTheme、cstheme），它们的优先级高于直接写的字体名。设置字体前必须先删掉这些属性，否则标题会显示成主题字体（宋体）而不是黑体。
